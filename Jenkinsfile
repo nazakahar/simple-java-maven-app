@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'maven:3.6-jdk-8-slim' 
-            args '-v maven-repo:/root/.m2' 
+            args '--network jenkins -v maven-repo:/root/.m2' 
         }
     }
     stages {
