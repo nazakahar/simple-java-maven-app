@@ -2,9 +2,9 @@ node {
     
     docker.image('maven:3.6-alpine').inside('--network host -v maven-repo:/root/.m2') {
     
-        stage('Build') {
+        stage('Email Notification') {
             // sh 'mvn -B -DskipTests clean package'
-            emailext mimeType: 'text/html',
+            mail mimeType: 'text/html',
                  subject: "[Jenkins] Approval Request",
                  to: "nazakahar@gmail.com",
                  body: '''<a href="${BUILD_URL}input">click to approve</a>'''
