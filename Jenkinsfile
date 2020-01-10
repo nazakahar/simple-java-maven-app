@@ -1,30 +1,22 @@
-pipeline {
-    agent {
-        docker {
-            image 'maven:3.6-alpine' 
-            args '--network host -v maven-repo:/root/.m2' 
-        }
-    }
-    stages {
+node {
+    
+    docker.image('maven:3.6-alpine').inside('--network host -v maven-repo:/root/.m2') {
+    
         stage('Build') {
-            steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
+            sh 'mvn -B -DskipTests clean package'
         }
-        stage('Test') {
-            steps {
+        
+        try{
+            stage('Test') {
                 sh 'mvn test'
             }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
         }
+        finally {
+            junit 'target/surefire-reports/*.xml'
+        }
+        
         stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-            }
+            sh './jenkins/scripts/deliver.sh'
         }
     }
 }
